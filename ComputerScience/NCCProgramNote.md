@@ -1,23 +1,38 @@
 # 新建模块
-new -> other -> YonBuilder -> 业务组件
+1. new -> other -> YonBuilder -> 业务组件
 # 新建节点
 1. MDP资源管理器 -> 新建实体组件 -> 设计元数据 -> 发布元数据。
     1. 主体（右键） -> 特征 -> 组织信息，审计信息，档案自定义项（有审批则需额外添加富客户端单据信息，审批流信息）。
     2. 从其他元数据复制 业务接口（id，pid）和（pk锁）。
-    3. 添加 pk主键，并设置为主键，且长度为20
-    4. 添加code（编码），name（名称）字段。
-    5. 发布元数据。
+    3. 添加pk主键，并设置为主键，且长度为20。
+    4. 添加code（编码），name（名称），enablestate（启用状态：baseapp -> pubenum）字段。
+    5. 配置业务接口属性映射
+        * id：主键
+        * pk_org：组织
+        * code：作为参照时的编码，没有则为编码（code）
+        * name：作为参照时的名称，没有则为名称（name）
+        * pk_group：集团
+        * enablestate：启用状态
+        * pk锁：主键
     6. 主子表或多子表中主表对应的实体，访问器要设置为AggVO，其他一般选择NCVO
+    7. 发布元数据。
 2. 应用工厂 -> 代码定制 -> 生成代码。
 3. 合并后端代码
-    1. 后端代码src下的private和public与后端工程代码相关文件（basedoc)的src中对应的文件夹合并。
-    2. 后端代码src下的client与后端工程代码nccloud/src/client合并。
-    3. 后端代码METADATA和META-INF与后端工程代码相关文件（basedoc)中对应的文件夹合并。
+    1. 将src下的private和public与后端工程相关模块代码下的src合并。
+    2. 将src下的client与后端工程相关项目下的nccloud/src/client合并。
+    3. 将META-INF与后端工程相关模块代码下的META-INF合并（upm文件）。
 4. 合并前端代码
-    1. 前端代码src与前端工程代码中的src文件夹合并。
-5. 菜单注册 -> 职责_集团
+    1. 将src与前端工程代码中的src文件夹合并。
+5. 菜单注册 -> 自定义菜单升级
+6. 职责_集团 -> 分配应用
 6. 配置前端config.js
 7. 将Action文件与xml文件复制到home里
+## 相关报错处理
+1. pk_md_bizitfmap冲突：
+```
+DELETE FROM MD_BIZITFMAP WHERE intattrid = '60bdf1fb-95e3-43dc-8feb-f874de9293eb' AND classid = 'da871b0f-d620-4932-bdbd-935eb37ad57b'
+```
+2. 
 
 
 # 补丁
@@ -25,19 +40,118 @@ new -> other -> YonBuilder -> 业务组件
 ### 前端
 1. 在config.json文件的buildEntryPath下添加节点路径和refer路径
 2. TERMAINL中执行npm run patch
-3. 补丁中只保留节点相关代码
-4. 将前端补丁replacement/hotwebs/nccloud/resources放入后端补丁replacement/hotwens/nccloud/resources中
+3. 将前端补丁replacement/hotwebs/nccloud/resources放入后端补丁replacement/hotwebs/nccloud/resources中
 ### 后端
 1. 编译代码。
 2. 选中所有与节点相关代码文件（public, META-INF, client, private）导出。
 3. Export->NC Cloud/NC Cloud补丁包->填写补丁名称->选择导出文件路径（补丁命名规范：patch_yyyymmdd_ddmmss_开发者姓名_补丁名）
-4. 将生成代码中的resources文件夹移动到后端补丁replacement文件夹下。
+4. 将home/resources/excel/billdefine下相关模块中的xml文件复制到replacement文件夹相同路径下（replacement文件夹等于home文件夹）。
+5. 将upm文件复制到replacement/modules/模块名/META-INF下。
 ## 上传补丁
 * 地址10.18.18.62:9999/nmc
 * 账号密码 admin/admin
 * 补丁管理 -> 补丁上传 -> 补丁应用（修改补丁包中packmetadata.xml文件中的id，则可再次上传）
 ## 抽脚本
-1. 修改脚本中节点数据，在数据库中执行并生成sql
+1. 升级元数据。
+2. 修改模块或节点编码，在数据库中执行并生成sql。
+``` sql
+--菜单
+SELECT * FROM SM_APPMENUITEM WHERE MENUITEMCODE LIKE '%20H9%' AND PK_MENU = '1004Z510000000000FFL' ORDER BY ts DESC;
+SELECT * FROM DAP_DAPSYSTEM WHERE Moduleid IN ('20H9')   ;
+--节点
+SELECT * FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9'));
+--页面
+SELECT * FROM SM_APPPAGE WHERE  PARENTCODE LIKE '20H9%';
+--模板
+SELECT * FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H9%';
+--区域
+SELECT * FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H9%' );
+--查询区
+SELECT * FROM PUB_QUERY_PROPERTY WHERE AREAID IN (SELECT PK_AREA FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H9%' ));
+--表单区
+SELECT * FROM PUB_FORM_PROPERTY WHERE AREAID IN (SELECT PK_AREA FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H9%' ));
+--按钮
+SELECT * FROM SM_APPBUTNREGISTER WHERE PAGECODE LIKE '20H9%' ;
+--导入导出
+SELECT * FROM EXCEL_OUTPUTPROCESS  WHERE  MODULE ='TOACCFLOW' AND BILLTYPE LIKE '%20H9%';
+SELECT * FROM EXCEL_BILLPROCESS  WHERE   MODULE ='TOACCFLOW' AND BILLTYPE LIKE '%20H9%';
+SELECT * FROM EXCEL_TRANSLATOR WHERE MODULE ='toaccflow' AND TRACLASSNAME LIKE '%ztfilp%' ORDER BY ts DESC ;
+--参照
+SELECT * FROM BD_REFINFO  WHERE MODULENAME  = 'toaccflow' AND code like ('%20H9%');
+--打印
+SELECT * FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN ( SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9')));
+
+SELECT * FROM   pub_print_datasource WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
+SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9'))
+)
+);
+
+SELECT * FROM PUB_PRINT_CELL WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
+SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9'))
+)
+);
+
+SELECT * FROM pub_print_variable WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
+SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9'))
+)
+);
+
+SELECT * FROM  pub_print_region WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
+SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9'))
+)
+);
+
+--删除相关数据（导入错误数据后使用）
+DELETE FROM SM_APPMENUITEM WHERE APPCODE LIKE '%20H2%' AND PK_MENU = '1004Z510000000000FFL' AND MENUITEMCODE <> '20H200TW';
+DELETE FROM DAP_DAPSYSTEM WHERE Moduleid IN ('20H2')  ; 
+--节点
+DELETE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H2'));
+--页面
+DELETE FROM SM_APPPAGE WHERE  PARENTCODE LIKE '20H2%';
+--模板
+DELETE FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H2%';
+--区域
+DELETE FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H2%' );
+--查询区
+DELETE FROM PUB_QUERY_PROPERTY WHERE AREAID IN (SELECT PK_AREA FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H2%' ));
+--表单区
+DELETE FROM PUB_FORM_PROPERTY WHERE AREAID IN (SELECT PK_AREA FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H2%' ));
+--按钮
+DELETE FROM SM_APPBUTNREGISTER WHERE PAGECODE LIKE '20H2%' ;
+--导入导出
+DELETE FROM EXCEL_OUTPUTPROCESS  WHERE  MODULE ='TOACCFLOW' AND BILLTYPE LIKE '%20H2%';
+DELETE FROM EXCEL_BILLPROCESS  WHERE   MODULE ='TOACCFLOW' AND BILLTYPE LIKE '%20H2%';
+DELETE FROM EXCEL_TRANSLATOR WHERE MODULE ='toaccflow' AND TRACLASSNAME LIKE '%irbps%' ORDER BY ts DESC ;
+--参照
+DELETE FROM BD_REFINFO  WHERE MODULENAME  = 'toaccflow' AND code like ('%20H2%');
+--打印
+DELETE FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN ( SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H2')));
+
+DELETE FROM   pub_print_datasource WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
+SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H2'))
+)
+);
+
+DELETE FROM PUB_PRINT_CELL WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
+SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H2'))
+)
+);
+
+DELETE FROM pub_print_variable WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
+SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H2'))
+)
+);
+
+DELETE FROM  pub_print_region WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
+SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H2'))
+)
+);
+```
+3. 上传补丁
+4. 在数据库中创建相关表
+``` sql
+--导表脚本
+```
 
 # 数据库
 
