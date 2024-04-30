@@ -1,3 +1,5 @@
+# 新建模块
+new -> other -> YonBuilder -> 业务组件
 # 新建节点
 1. MDP资源管理器 -> 新建实体组件 -> 设计元数据 -> 发布元数据。
     1. 主体（右键） -> 特征 -> 组织信息，审计信息，档案自定义项（有审批则需额外添加富客户端单据信息，审批流信息）。
@@ -13,6 +15,10 @@
     3. 后端代码METADATA和META-INF与后端工程代码相关文件（basedoc)中对应的文件夹合并。
 4. 合并前端代码
     1. 前端代码src与前端工程代码中的src文件夹合并。
+5. 菜单注册 -> 职责_集团
+6. 配置前端config.js
+7. 将Action文件与xml文件复制到home里
+
 
 # 补丁
 ## 导出补丁
@@ -57,7 +63,8 @@ SELECT * FROM table_name WHERE column_name LIKE ‘%condition%’
 DROP TABLE table_name
 SELECT * FROM table_name FETCH FIRST 1 ROWS ONLY
 ```
-# SAP & JAVA 
+# 国寿开发笔记
+## SAP & JAVA 
 | SAP | JAVA |
 | - | - |
 | X IS NOT INITIAL. | import org.apache.commons.lang3.StringUtils; <br> StringUtils.isNotBlank(X); |
@@ -119,6 +126,17 @@ dao.executeUpdate(updateZtfilp_headSql);
 ```
 前端取数据
 loadlist
+
+## 元数据参照
+### 财务会计
+业务单元: 组织 -> 业务单元  
+会计年度: 会计期间档案 -> 会计年度  
+会计期间: 会计月份  
+利润中心: 利润中心  
+县支公司: 成本中心 -> 管会成本中心  
+成本中心: 组织_部门
+
+
 
 
 
@@ -241,3 +259,8 @@ IToaccflow_ztfilp_subService service = ServiceLocator.find(IToaccflow_ztfilp_sub
 ```sql 
 SELECT t.version FROM md_component t WHERE t.id='';
 ```
+
+
+62数据库已迁移。
+新地址： 10.18.60.225 3306     
+用户：CLIC_MR_TEST2@fmisV8dbtest#rcobc03:1661242987 密码：Kjy2023
