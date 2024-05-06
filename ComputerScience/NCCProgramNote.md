@@ -378,3 +378,11 @@ SELECT t.version FROM md_component t WHERE t.id='';
 62数据库已迁移。
 新地址： 10.18.60.225 3306     
 用户：CLIC_MR_TEST2@fmisV8dbtest#rcobc03:1661242987 密码：Kjy2023
+
+
+
+state
+0：默认
+3：删除
+1：修改
+2：新增
