@@ -379,10 +379,12 @@ SELECT t.version FROM md_component t WHERE t.id='';
 新地址： 10.18.60.225 3306     
 用户：CLIC_MR_TEST2@fmisV8dbtest#rcobc03:1661242987 密码：Kjy2023
 
+62服务器：10.18.18.62
+用户名/密码：root/Kjy@2023
 
 
-state
-0：默认
-3：删除
-1：修改
-2：新增
+state  
+0：默认  
+1：修改  
+2：新增  
+3：删除  
