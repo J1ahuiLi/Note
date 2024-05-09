@@ -360,8 +360,35 @@ IToaccflow_ztfilp_subService service = ServiceLocator.find(IToaccflow_ztfilp_sub
 
 
 
+### Java
+1. 根据逗号截取字符串存入List
+``` java
+String str = "one,two,three";
+List<String> strList = Arrays.asList(str.split(","));
+```
+2. 字符串逗号分隔加引号
+``` java
+// 方法一: 
+// String str = "TODO (Features)" 结果为 'TODO (Features)'
+public static String spilt(String str) {
+        StringBuffer sb = new StringBuffer();
+        String[] temp = str.split(",");
+        for (int i = 0; i < temp.length; i++) {
+            if (!"".equals(temp[i]) && temp[i] != null)
+                sb.append("'" + temp[i] + "',");
+        }
+        String result = sb.toString();
+        String tp = result.substring(result.length() - 1, result.length());
+        if (",".equals(tp)){
+            return result.substring(0, result.length() - 1);
+        } else{
+            return result;
+        }
+// 方法二:
+// String str = "TODO (Features)" 结果为 'TODO' ('Features')
+replaceAll("\\b", "'") 
 
-
+```
 
 
 
@@ -388,3 +415,4 @@ state
 1：修改  
 2：新增  
 3：删除  
+
