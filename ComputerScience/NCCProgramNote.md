@@ -360,14 +360,14 @@ IToaccflow_ztfilp_subService service = ServiceLocator.find(IToaccflow_ztfilp_sub
 
 
 
-### Java
+# Java
 1. 根据逗号截取字符串存入List
-``` java
+``` Java
 String str = "one,two,three";
 List<String> strList = Arrays.asList(str.split(","));
 ```
 2. 字符串逗号分隔加引号
-``` java
+``` Java
 // 方法一: 
 // String str = "TODO (Features)" 结果为 'TODO (Features)'
 public static String spilt(String str) {
@@ -387,7 +387,60 @@ public static String spilt(String str) {
 // 方法二:
 // String str = "TODO (Features)" 结果为 'TODO' ('Features')
 replaceAll("\\b", "'") 
-
+```
+3. List按某字段排序
+``` Java 1.8
+List<User> newList = list.stream().sorted(Comparator.comparing(User::getAge)).collect(Collectors.toList());
+```
+3. 判断List中是否有重复元素
+``` Java
+// 方法一：将List转为Set，通过2个集合的size大小是否相等来判断有无重复元素
+public static void main(String[] args) {
+    List<String> stringList=new ArrayList<>(Arrays.asList("a","a","b","c"));
+    Set<String> stringSet=new HashSet<>(stringList);
+    if (stringList.size() == stringSet.size()) {
+        System.out.println("没有重复元素");
+    } else {
+        System.out.println("有重复元素");
+    }
+}
+// 方法二：使用jdk8的Stream来判断
+public static void main(String[] args) {
+    List<String> stringList=new ArrayList<>(Arrays.asList("a","a","b","c"));
+    long count = stringList.stream().distinct().count();
+    if (stringList.size() == count) {
+    System.out.println("没有重复元素");
+    } else {
+    System.out.println("有重复元素");
+    }
+}
+```
+3. List按某字段排序
+``` java
+```
+3. List按某字段排序
+``` java
+```
+3. List按某字段排序
+``` java
+```
+3. List按某字段排序
+``` java
+```
+3. List按某字段排序
+``` java
+```
+3. List按某字段排序
+``` java
+```
+3. List按某字段排序
+``` java
+```
+3. List按某字段排序
+``` java
+```
+3. List按某字段排序
+``` java
 ```
 
 
