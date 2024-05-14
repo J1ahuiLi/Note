@@ -358,6 +358,8 @@ IToaccflow_ztfilp_subService service = ServiceLocator.find(IToaccflow_ztfilp_sub
 * VSCode
 * Node.js
 
+jps -ml
+kill -9 进程
 
 
 # Java
