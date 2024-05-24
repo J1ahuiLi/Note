@@ -464,6 +464,11 @@ SELECT t.version FROM md_component t WHERE t.id='';
 62服务器：10.18.18.62
 用户名/密码：root/Kjy@2023
 
+业务单元：组织 -> 业务单元
+利润中心：成本中心 -> 管会成本中心
+县支公司：组织_部门 -> 组织
+
+
 
 state  
 0：默认  
