@@ -47,38 +47,43 @@ DELETE FROM MD_BIZITFMAP WHERE intattrid = '60bdf1fb-95e3-43dc-8feb-f874de9293eb
 3. Export->NC Cloud/NC Cloud补丁包->填写补丁名称->选择导出文件路径（补丁命名规范：patch_yyyymmdd_ddmmss_开发者姓名_补丁名）
 4. 将home/resources/excel/billdefine下相关模块中的xml文件复制到replacement文件夹相同路径下（replacement文件夹等于home文件夹）。
 5. 将upm文件复制到replacement/modules/模块名/META-INF下。
+6. 将module.xml复制到replacement相关路径下。
 ## 上传补丁
-* 地址10.18.18.62:9999/nmc
+* NMC
 * 账号密码 admin/admin
 * 补丁管理 -> 补丁上传 -> 补丁应用（修改补丁包中packmetadata.xml文件中的id，则可再次上传）
 ## 抽脚本
 1. 升级元数据。
 2. 修改模块或节点编码，在数据库中执行并生成sql。
 ``` sql
---菜单
+--应用菜单项注册
 SELECT * FROM SM_APPMENUITEM WHERE MENUITEMCODE LIKE '%20H9%' AND PK_MENU = '1004Z510000000000FFL' ORDER BY ts DESC;
-SELECT * FROM DAP_DAPSYSTEM WHERE Moduleid IN ('20H9')   ;
---节点
+SELECT * FROM sm_createcorp WHERE FUNCCODE ='20H4'
+--模块信息
+SELECT * FROM DAP_DAPSYSTEM WHERE Moduleid IN ('20H9');
+--元数据模块实体
+SELECT * FROM md_module WHERE id = 'taxm'
+--应用注册
 SELECT * FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9'));
---页面
+--应用页面
 SELECT * FROM SM_APPPAGE WHERE  PARENTCODE LIKE '20H9%';
---模板
+--页面模板
 SELECT * FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H9%';
 --区域
 SELECT * FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H9%' );
---查询区
+--查询区字段
 SELECT * FROM PUB_QUERY_PROPERTY WHERE AREAID IN (SELECT PK_AREA FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H9%' ));
---表单区
+--表单字段属性
 SELECT * FROM PUB_FORM_PROPERTY WHERE AREAID IN (SELECT PK_AREA FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H9%' ));
---按钮
+--页面按钮注册实体
 SELECT * FROM SM_APPBUTNREGISTER WHERE PAGECODE LIKE '20H9%' ;
 --导入导出
 SELECT * FROM EXCEL_OUTPUTPROCESS  WHERE  MODULE ='TOACCFLOW' AND BILLTYPE LIKE '%20H9%';
 SELECT * FROM EXCEL_BILLPROCESS  WHERE   MODULE ='TOACCFLOW' AND BILLTYPE LIKE '%20H9%';
 SELECT * FROM EXCEL_TRANSLATOR WHERE MODULE ='toaccflow' AND TRACLASSNAME LIKE '%ztfilp%' ORDER BY ts DESC ;
---参照
+--参照信息
 SELECT * FROM BD_REFINFO  WHERE MODULENAME  = 'toaccflow' AND code like ('%20H9%');
---打印
+--输出模板
 SELECT * FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN ( SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9')));
 
 SELECT * FROM   pub_print_datasource WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
@@ -102,48 +107,53 @@ SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SE
 );
 
 --删除相关数据（导入错误数据后使用）
-DELETE FROM SM_APPMENUITEM WHERE APPCODE LIKE '%20H2%' AND PK_MENU = '1004Z510000000000FFL' AND MENUITEMCODE <> '20H200TW';
-DELETE FROM DAP_DAPSYSTEM WHERE Moduleid IN ('20H2')  ; 
---节点
-DELETE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H2'));
---页面
-DELETE FROM SM_APPPAGE WHERE  PARENTCODE LIKE '20H2%';
---模板
-DELETE FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H2%';
+--应用菜单项注册
+DELETE FROM SM_APPMENUITEM WHERE MENUITEMCODE LIKE '%20H9%' AND PK_MENU = '1004Z510000000000FFL' ORDER BY ts DESC;
+DELETE FROM sm_createcorp WHERE FUNCCODE ='20H4'
+--模块信息
+DELETE FROM DAP_DAPSYSTEM WHERE Moduleid IN ('20H9');
+--元数据模块实体
+DELETE FROM md_module WHERE id = 'taxm'
+--应用注册
+DELETE FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9'));
+--应用页面
+DELETE FROM SM_APPPAGE WHERE  PARENTCODE LIKE '20H9%';
+--页面模板
+DELETE FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H9%';
 --区域
-DELETE FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H2%' );
---查询区
-DELETE FROM PUB_QUERY_PROPERTY WHERE AREAID IN (SELECT PK_AREA FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H2%' ));
---表单区
-DELETE FROM PUB_FORM_PROPERTY WHERE AREAID IN (SELECT PK_AREA FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H2%' ));
---按钮
-DELETE FROM SM_APPBUTNREGISTER WHERE PAGECODE LIKE '20H2%' ;
+DELETE FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H9%' );
+--查询区字段
+DELETE FROM PUB_QUERY_PROPERTY WHERE AREAID IN (SELECT PK_AREA FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H9%' ));
+--表单字段属性
+DELETE FROM PUB_FORM_PROPERTY WHERE AREAID IN (SELECT PK_AREA FROM pub_area WHERE TEMPLETID IN (SELECT PK_PAGE_TEMPLET FROM PUB_PAGE_TEMPLET WHERE APPCODE  LIKE '20H9%' ));
+--页面按钮注册实体
+DELETE FROM SM_APPBUTNREGISTER WHERE PAGECODE LIKE '20H9%' ;
 --导入导出
-DELETE FROM EXCEL_OUTPUTPROCESS  WHERE  MODULE ='TOACCFLOW' AND BILLTYPE LIKE '%20H2%';
-DELETE FROM EXCEL_BILLPROCESS  WHERE   MODULE ='TOACCFLOW' AND BILLTYPE LIKE '%20H2%';
-DELETE FROM EXCEL_TRANSLATOR WHERE MODULE ='toaccflow' AND TRACLASSNAME LIKE '%irbps%' ORDER BY ts DESC ;
---参照
-DELETE FROM BD_REFINFO  WHERE MODULENAME  = 'toaccflow' AND code like ('%20H2%');
---打印
-DELETE FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN ( SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H2')));
+DELETE FROM EXCEL_OUTPUTPROCESS  WHERE  MODULE ='TOACCFLOW' AND BILLTYPE LIKE '%20H9%';
+DELETE FROM EXCEL_BILLPROCESS  WHERE   MODULE ='TOACCFLOW' AND BILLTYPE LIKE '%20H9%';
+DELETE FROM EXCEL_TRANSLATOR WHERE MODULE ='toaccflow' AND TRACLASSNAME LIKE '%ztfilp%' ORDER BY ts DESC ;
+--参照信息
+DELETE FROM BD_REFINFO  WHERE MODULENAME  = 'toaccflow' AND code like ('%20H9%');
+--输出模板
+DELETE FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN ( SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9')));
 
 DELETE FROM   pub_print_datasource WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
-SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H2'))
+SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9'))
 )
 );
 
 DELETE FROM PUB_PRINT_CELL WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
-SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H2'))
+SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9'))
 )
 );
 
 DELETE FROM pub_print_variable WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
-SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H2'))
+SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9'))
 )
 );
 
 DELETE FROM  pub_print_region WHERE ctemplateid IN (SELECT ctemplateid FROM  PUB_PRINT_TEMPLATE  WHERE APPCODE IN (
-SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H2') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H2'))
+SELECT CODE FROM SM_APPREGISTER WHERE  parent_id IN ('20H9') OR parent_id IN (SELECT PK_APPREGISTER  FROM SM_APPREGISTER WHERE parent_id IN ('20H9'))
 )
 );
 ```
@@ -443,4 +453,84 @@ public Object doAction(IRequest request, RequstParamWapper paramWapper) throws T
 ```sql
 SELECT * FROM pub_area WHERE code = '';
 UPDATE pub_area SET pagination = 'true' WHERE code = '';
+```
+
+## 档案唯一性校验及数据隔离（集团管控）
+
+### 元数据
+实体和组件的扩展标签：BDMODE,URC,DOC
+需要进行唯一性校验的字段的扩展标签：URC
+业务接口属性映射：pk_org -> 组织，pk_group -> 集团
+
+### ServiceImpl.java
+```java
+import nc.itf.toaccflow.ztrans_rc_sub4.ztransrcsub4vo.IZtransRcSub4VOService;
+import nc.bs.framework.common.NCLocator;
+
+public String[] listPit_inputPkByCond(String condition, String[] orderPath) throws BusinessException {
+    // 查询条件拼接集团信息 Added by Jiahui Li
+    String pk_group = InvocationInfoProxy.getInstance().getGroupId();
+    sql.append(" where ").append(condition).append(" and pk_group = '" + pk_group + "' ");
+}
+
+public void initDefaultData(Pit_input vo) {
+    // Added by Jiahui Li
+    if(vo.getAttributeValue("pk_group") == null){
+        vo.setAttributeValue("pk_group",InvocationInfoProxy.getInstance().getGroupId());
+    }
+}
+
+private void setAuditInfo(Pit_input... vos) throws BusinessException {
+    if (ArrayUtils.isNotEmpty(vos)) {
+        // 通过集团获取客户端接口 Added by Jiahui Li
+		IZtransRcSub4VOService service = NCLocator.getInstance().lookup(IZtransRcSub4VOService.class);
+		Map<String, String> pk_groupToMandt = new HashMap<String, String>();// Map<集团主键，客户端>
+
+		UFDateTime now = new UFDateTime();
+		for (Pit_input vo : vos) {
+			String pk = getVOPrimaryKey(vo);
+			if (StringUtils.isEmpty(pk)) {
+				// 设置创建人创建时间
+				getMainVO(vo).setAttributeValue("creator", InvocationInfoProxy.getInstance().getUserId());
+				getMainVO(vo).setAttributeValue("creationtime", now);
+				getMainVO(vo).setAttributeValue("", now);
+				getMainVO(vo).setAttributeValue("modifier", null);
+				getMainVO(vo).setAttributeValue("modifiedtime", null);
+			} else {
+				// 设置修改人修改时间
+				getMainVO(vo).setAttributeValue("modifier", InvocationInfoProxy.getInstance().getUserId());
+				getMainVO(vo).setAttributeValue("modifiedtime", now);
+				getMainVO(vo).setAttributeValue("", now);
+			}
+
+			// 补充集团信息、客户端信息 added by Jiahui Li
+			String pk_group = InvocationInfoProxy.getInstance().getGroupId();
+			if (vo.getAttributeValue("pk_group") == null) {
+				getMainVO(vo).setAttributeValue("pk_group", pk_group);
+			}
+			getMainVO(vo).setAttributeValue("pk_org", pk_group);
+			getMainVO(vo).setAttributeValue("pk_org_v", pk_group);
+			// 补充集团后，如果集团还是空的，需要提示
+			if (vo.getAttributeValue("pk_group") == null) {
+				ExceptionUtils.wrapBusinessException("未获取到集团！");
+			}
+			// 补充客户端的值
+			if (vo.getAttributeValue("mandt") == null) {
+				String mandt = pk_groupToMandt.get(pk_group);
+				if (mandt == null) {
+					mandt = service.queryGroupCode(pk_group);
+					pk_groupToMandt.put(pk_group, mandt);
+				}
+				getMainVO(vo).setAttributeValue("mandt", mandt);
+			}
+			// 补充客户端后，如果客户端还是空的，需要给出提示
+			if (vo.getAttributeValue("mandt") == null) {
+				ExceptionUtils.wrapBusinessException("未获取到客户端！");
+			}
+		}
+	}
+}	
+				
+				
+
 ```
