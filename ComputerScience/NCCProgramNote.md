@@ -186,6 +186,7 @@ ALTER TABLE table_name MODIFY column_name VARCHAR(100)
 SELECT * FROM table_name WHERE column_name LIKE ‘%condition%’
 DROP TABLE table_name
 SELECT * FROM table_name FETCH FIRST 1 ROWS ONLY
+select a.*,(SNO||SNAME) from TEST_STUDENT a;
 ```
 # 国寿开发笔记
 ## SAP & JAVA 
