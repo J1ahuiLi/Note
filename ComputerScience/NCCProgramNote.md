@@ -289,6 +289,7 @@ IToaccflow_ztfilp_subService service = ServiceLocator.find(IToaccflow_ztfilp_sub
 ```
 
 
+
 #### home/modules/public
 * 包括接口类，实体类，工具类
 #### home/modules/private
@@ -613,4 +614,12 @@ public AggTaxRateConfigVO[] saveAggTaxRateConfigVO(AggTaxRateConfigVO vo) throws
 		return dao.update(vo); // 更新
 	}
 }
+```
+
+
+## 模板不存在或已被删除
+``` sql
+SELECT * FROM PUB_PAGE_TEMPLET WHERE CODE ='18203008A_ReportZtransSubject'
+UPDATE PUB_TEMPLATE_ASSIGNMENT SET PK_PAGE_TEMPLET = '1001ZZ1LCP00002V54UE' WHERE PAGE_CODE = '18203008A_ReportZtransSubject'
+SELECT * FROM PUB_TEMPLATE_ASSIGNMENT where PAGE_CODE = '18203008A_ReportZtransSubject' order BY TS ASC
 ```
