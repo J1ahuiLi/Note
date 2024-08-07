@@ -26,4 +26,7 @@ String result = list.stream().map(String::valueOf).collect(Collectors.joining(",
 ### List按某字段排序
 ``` java
 ```
-
+* String转double
+``` java
+double douTemp = Double.parseDouble(strTemp);
+```
