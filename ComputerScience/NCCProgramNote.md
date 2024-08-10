@@ -410,7 +410,9 @@ state
 
 
 ## 添加分页
+
 ### 前端
+
 创建state模型下，相关模块区域下添加
 ```js
 handleModal: {
@@ -436,7 +438,9 @@ onHandle = (param = {}, modalType) => {
         })
     }
 ```
+
 ### 后端
+
 ```java
 // json数据转换
 public Object doAction(IRequest request, RequstParamWapper paramWapper) throws Throwable {
@@ -465,7 +469,9 @@ public Object doAction(IRequest request, RequstParamWapper paramWapper) throws T
     return buildResult(param, false, null, finalResult.toArray());
 }
 ```
+
 ### 数据库
+
 ```sql
 SELECT * FROM pub_area WHERE code = '';
 UPDATE pub_area SET pagination = 'true' WHERE code = '';
@@ -474,6 +480,7 @@ UPDATE pub_area SET pagination = 'true' WHERE code = '';
 ## 档案唯一性校验及数据隔离（集团管控）
 
 ### 元数据
+
 实体和组件的扩展标签：BDMODE,URC,DOC
 需要进行唯一性校验的字段的扩展标签：URC
 业务接口属性映射：pk_org -> 组织，pk_group -> 集团
@@ -589,21 +596,18 @@ public class AggPit_tax_ledger_hTranslator extends AbstractRefTranslator {
 ```
 
 ### 导出字段修改
+
 ``` java
 @SuppressWarnings("unchecked")
 @Override
-protected ExportDataInfo getValue(Object[] vos, List<InputItem> exportItems, BillDefination billdefination)
-		throws BusinessException {
-	ExtendedAggregatedValueObject[] aggvos = getConvertorForTemp(new DefRefPropertyProcess())
-			.convertDataFromEditorData(billdefination, vos, exportItems);
-
+protected ExportDataInfo getValue(Object[] vos, List<InputItem> exportItems, BillDefination billdefination) throws BusinessException {
+    ExtendedAggregatedValueObject[] aggvos = getConvertorForTemp(new DefRefPropertyProcess()).convertDataFromEditorData(billdefination, vos, exportItems);
     //TODO
-	// String strMapSql = "SELECT riskcode, RISKCODE_YW FROM "
-	// 		+ "( SELECT RISKCODE_YW, RISKCODE_NAME, RISKCODE, PK_ZTRANS_RCCONVERT, row_number() over(PARTITION BY RISKCODE_YW,RISKCODE_NAME,RISKCODE ORDER BY RISKCODE_YW) AS rk FROM "
-	// 		+ "( SELECT trim(RISKCODE_YW) RISKCODE_YW, trim(RISKCODE_NAME) RISKCODE_NAME, trim(RISKCODE) RISKCODE, trim(PK_ZTRANS_RCCONVERT) PK_ZTRANS_RCCONVERT FROM ztrans_rcconvert UNION SELECT trim(RISKCODE_YW) RISKCODE_YW, '_', trim(RISKCODE) RISKCODE, PK_ZCIS_RCCONVERT  FROM zcis_rcconvert ) ) WHERE rk =1";
-
-	// Map<String, String> ywCodeMap = (Map<String, String>) new BaseDAO().executeQuery(strMapSql.toString(),
-	// 		new KeyValueMapProcessor<String, String>());
+    // String strMapSql = "SELECT riskcode, RISKCODE_YW FROM "
+    // 		+ "( SELECT RISKCODE_YW, RISKCODE_NAME, RISKCODE, PK_ZTRANS_RCCONVERT, row_number() over(PARTITION BY RISKCODE_YW,RISKCODE_NAME,RISKCODE ORDER BY RISKCODE_YW) AS rk FROM "
+    // 		+ "( SELECT trim(RISKCODE_YW) RISKCODE_YW, trim(RISKCODE_NAME) RISKCODE_NAME, trim(RISKCODE) RISKCODE, trim(PK_ZTRANS_RCCONVERT) PK_ZTRANS_RCCONVERT FROM ztrans_rcconvert UNION SELECT trim(RISKCODE_YW) RISKCODE_YW, '_', trim(RISKCODE) RISKCODE, PK_ZCIS_RCCONVERT  FROM zcis_rcconvert ) ) WHERE rk =1";
+    
+    // Map<String, String> ywCodeMap = (Map<String, String>) new BaseDAO().executeQuery(strMapSql.toString(), new KeyValueMapProcessor<String, String>());
     // try {
     //     for (ExtendedAggregatedValueObject aggvo : aggvos) {
     //         aggvo.getParentVO().setAttributeValue("pk_taxcode", ywCodeMap.get(aggvo.getParentVO().getAttributeValue("pk_taxcode")));
@@ -611,28 +615,30 @@ protected ExportDataInfo getValue(Object[] vos, List<InputItem> exportItems, Bil
     // } catch (Exception e) {
     //     Logger.error(e);
     // }
-
-	return new ExportDataInfo(aggvos);
+    
+    return new ExportDataInfo(aggvos);
 }
 ```
 
 ### 导入字段赋值
+
 ``` java
 @Override
 public AggTaxRateConfigVO[] saveAggTaxRateConfigVO(AggTaxRateConfigVO vo) throws BusinessException {
-	//TODO
-	// vo.getParentVO().setPk_type1name(type1Name.get(vo.getParentVO().getPk_type1()));
-		
-	if (StringUtils.isEmpty(pk)) {
-		return dao.insert(vo); // 插入
-	} else {
-		return dao.update(vo); // 更新
-	}
+    //TODO
+    // vo.getParentVO().setPk_type1name(type1Name.get(vo.getParentVO().getPk_type1()));
+    
+    if (StringUtils.isEmpty(pk)) {
+        return dao.insert(vo); // 插入
+    } else {
+        return dao.update(vo); // 更新
+    }
 }
 ```
 
 
 ## 模板不存在或已被删除
+
 ``` sql
 SELECT * FROM PUB_PAGE_TEMPLET WHERE CODE ='18203008A_ReportZtransSubject'
 UPDATE PUB_TEMPLATE_ASSIGNMENT SET PK_PAGE_TEMPLET = '1001ZZ1LCP00002V54UE' WHERE PAGE_CODE = '18203008A_ReportZtransSubject'
